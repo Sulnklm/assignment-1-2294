@@ -1,21 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment 1</title>
+	<meta charset="UTF-8">
+	<title>MDIA 2294</title>
+	
+	<style>
+	    thead{
+	        font-weight:bold;
+	    }
+	    
+	    td{
+	        padding-left:5px;
+	        padding-right:5px;	        
+	    }
+	    
+	    td.sub-total{
+	        text-align:right;	        
+	    }
+	</style>
 </head>
 <body>
+	<h1>MDIA 2294: ACME Corp Invoice</h1>
+	
+	<table>
+	    <thead>
+	        <tr>
+	            <td>ITEM</td>
+	            <td>DESCRIPTION</td>
+	            <td>QTY</td>
+	            <td>PRICE</td>
+	            <td>LINE TOTAL</td>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr>
+	            <td>1</td>
+	            <td><input id="line-1-description" type="text" size="40" value="Anvil" /></td>
+	            <td><input id="line-1-quantity" type="text" size="3" value="5" /></td>
+	            <td><input id="line-1-price" type="text" size="6" value="35.00" /></td>
+	            <td class="sub-total"><span id="line-1"></span></td>
+	        </tr>
+	        <tr>
+	            <td>2</td>
+	            <td><input id="line-2-description" type="text" size="40" value="Rocket Skates (each)" /></td>
+	            <td><input id="line-2-quantity" type="text" size="3" value="2" /></td>
+	            <td><input id="line-2-price" type="text" size="6" value="24.99" /></td>
+	            <td class="sub-total"><span id="line-2"></span></td>
+	        </tr>
+	        <tr>
+	            <td>3</td>
+	            <td><input id="line-3-description" type="text" size="40" value="Giant Magnet" /></td>
+	            <td><input id="line-3-quantity" type="text" size="3" value="1" /></td>
+	            <td><input id="line-3-price" type="text" size="6" value="125.50" /></td>
+	            <td class="sub-total"><span id="line-3"></span></td>
+	        </tr>
+	        <tr>
+	            <td>4</td>
+	            <td><input id="line-4-description" type="text" size="40" value="Ball bearings" /></td>
+	            <td><input id="line-4-quantity" type="text" size="3" value="500" /></td>
+	            <td><input id="line-4-price" type="text" size="6" value="0.25" /></td>
+	            <td class="sub-total"><span id="line-4"></span></td>
+	        </tr>
+	        <tr>
+	            <td>5</td>
+	            <td><input id="line-5-description" type="text" size="40" value="Portable holes" /></td>
+	            <td><input id="line-5-quantity" type="text" size="3" value="12" /></td>
+	            <td><input id="line-5-price" type="text" size="6" value="15.25" /></td>
+	            <td class="sub-total"><span id="line-5"></span></td>
+	        </tr>
+	    </tbody>
+	    <tfoot>
+	        <tr>
+	            <td colspan="4" style="text-align:right;">SUB TOTAL</td>  
+	            <td class="sub-total"><span id="subTotal"></span></td>	        
+	        </tr>
+	        <tr>
+	            <td colspan="4" style="text-align:right;">DISCOUNT</td>  
+	            <td class="sub-total"><span id="discount"></span></td>	        
+	        </tr>
+	        <tr>
+	            <td colspan="4" style="text-align:right;">TAX</td>  
+	            <td class="sub-total"><span id="tax"></span></td>	        
+	        </tr>
+	        <tr>
+	            <td colspan="4" style="text-align:right;">TOTAL</td>  
+	            <td class="sub-total" style="border-top:solid black 1px"><span id="Total"></span></td>	        
+	        </tr>
+	    </tfoot>	    
+	</table>
+	
+	<div><button id="calculate">Calculate</button></div>
+	<div>NOTE: discounts of 10% are given to orders over $250</div>
 
-    <h1>Git is fun!!!!</h1>
+	<script>
+		//Designating button ID
+		const calculateBtn = document.querySelector("#calculate");
 
-    <p>GitHub allows us to backup our code and work with others!!!!</p>
 
-    <script>
+		//Constants are defined using uppercase to improve code readability
+		//Global constants
+		const TAX = .12;
+		const DISCOUNT_RATE = .10;
+		
+		//The ID of the line item parameter
+		//Get the quantity value for the specified line item
+		//Get the price value for the specified line item
+		//Calculate the line total
+		//Update the HTML element
+		function runningLineTotal(lineId) {
+			const quantity = document.querySelector(`#line-${lineId}-quantity`).value;
+			const price = document.querySelector(`#line-${lineId}-price`).value;
+			const lineTotal = quantity * price;
+			document.querySelector(`#line-${lineId}`).innerHTML = "$" + lineTotal.toFixed(2);;
+			return lineTotal
+		}
 
-        document.querySelector("#pageTitle").style.color = "red";
+		// Calculate the total cost of all line items by summing up the line totals
+		function calculateAllLines() {
+			// Initialize the subtotal variable
+            let subTotal = 0;
 
+			//Calculate and add the line total for line item 1~5
+            subTotal += runningLineTotal(1);
+            subTotal += runningLineTotal(2);
+            subTotal += runningLineTotal(3);
+            subTotal += runningLineTotal(4);
+            subTotal += runningLineTotal(5);
+
+            return subTotal;
+        }
+
+		function runCalc() {
+			
+			// 2 options of button test 
+			// console.log("Button was clicked");
+			// alert("Button was clicked");
+			
+			// Initialize the total variable
+			let total = 0;
+			
+			//Calculate subtotal
+			const subTotal = calculateAllLines();
+			document.querySelector("#subTotal").innerHTML = "$" + subTotal.toFixed(2);
+
+
+			//Calculate discount
+			const discountAmount = subTotal >= 250 ? subTotal * DISCOUNT_RATE : 0;
+            document.querySelector("#discount").innerHTML = "$" + discountAmount.toFixed(2);
+
+			
+			//Calculate tax
+			const taxAmount = (subTotal-discountAmount) * TAX
+			document.querySelector("#tax").innerHTML = "$" + taxAmount.toFixed(2);			
+			
+			
+			//Calculate total
+			const totalAmount = subTotal - discountAmount + taxAmount
+			document.querySelector("#Total").innerHTML = "$" + totalAmount.toFixed(2);
+
+	    }
+
+		// Designating EventListener to run the Calculate button
+		calculateBtn.addEventListener("click", runCalc);
+	
+	
     </script>
-    
 </body>
 </html>
